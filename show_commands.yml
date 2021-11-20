@@ -1,0 +1,31 @@
+---
+- name: capture show output
+  hosts: all_pods
+  gather_facts: no
+  connection: network_cli
+
+  tasks: 
+    - name: TEST 3.1 SHOW COMMANDS
+      ios_command:
+        commands:
+        - show ip protocols
+        - show ip route
+        - show ip eigrp neighbors
+        - show version
+      register: config3-1
+
+    - name: save output to local directory
+      copy:
+        content: "{{ config3-1.stdout | replace('\\n', '\n') }}"
+        dest: "backup_diff/{{ location }}/{{ inventory_hostname }}.ios"
+######### TESTING VARIABLE - MIGHT NOT WORK ################        
+    - name: DIFF CONFIG
+      block:
+        - name: DIFF {{ inventory_hostname }}
+        copy:
+          src: 'backup_diff/{{ location }}/{{ inventory_hostname }}.ios'
+          dest: 'templates/TEST/{{ inventory_hostname }}.j2'
+        check_mode: yes
+        diff: yes
+      when: inventory_hostname == "{{ inventory_hostname }}"
+...
