@@ -1,0 +1,56 @@
+Part 1
+  R1/R2
+  STEP 2
+    sho run | s enable
+    sho run | inc password
+    sho run | s banner
+    sho run | inc domain
+    sho run | sec vty
+    sho run | sec 0/0/0
+    sho run | sec 0/0/1
+    sho run | s username
+    sho run | s loopback
+    sho crypto key mypubkey rsa
+
+  S1/S2
+  STEP 3
+    sho run | s enable
+    sho run | inc password
+    sho ip int bri
+    sho run | inc gateway
+      ping 192.168.1.1 #S1
+      ping 10.76.1.1 #S2
+
+Part 2
+  R1/R2
+  sho run | sec ospf
+  sho ip ospf nei
+  sho ip route ospf
+
+Part 3
+  R1
+  STEP 1
+  sho run | sec ospf
+  sho run | sec Loopback
+  sho run | sec 0/0/0
+  
+  R2
+  STEP 2
+  sho run | sec ospf
+  sho run | inc route
+  sho run | sec 0/0/0
+
+Part 4
+  R2
+  Step 2
+  sho ip access-list
+  sho run | sec 0/0/0
+
+  
+  R1
+  Step 3
+  sho run | sec ospf
+  sho ip access-list
+  sho run | inc nat
+  sho run int g0/0/0
+  sho run int g0/0/1
